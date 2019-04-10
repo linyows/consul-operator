@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consul-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: consul-operator
+  template:
+    metadata:
+      labels:
+        name: consul-operator
+    spec:
+      serviceAccountName: consul-operator
+      containers:
+        - name: consul-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - consul-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "consul-operator"
